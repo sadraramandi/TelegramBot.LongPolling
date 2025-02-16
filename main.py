@@ -1,28 +1,29 @@
-import os
-from telebot import TeleBot
-from dotenv import load_dotenv
-from telebot.types import Message
+import telebot
+import random
 
-# Load environment variables
-load_dotenv()
-TELEGRAM_BOT_TOKEN: str = os.getenv('TELEGRAM_BOT_TOKEN')
+# توکن ربات تلگرام رو اینجا بزار
+TOKEN = "8049027104:AAFVJAZexvEpCjXcke0lzqk3UgFnLMeTNYc"
 
-# Initialize bot
-bot = TeleBot(token=TELEGRAM_BOT_TOKEN)
+bot = telebot.TeleBot(TOKEN)
 
+# لیست جملات تصادفی
+responses = [
+    "کم زر بزن",
+    "گوه نخور",
+    "اسکل",
+    "میدونستی خیلی احمقی؟",
+    "جوون بچه خوشگل"
+    "کم تر زر بزنی کسی نمیگه لالی",
+    "چرا تو نمیمیری؟. برو زیر تریلی دیگه",
+    "یه سول دارم چند تا درخت توته؟"
+]
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message: Message):
-    """ Handles the /start command by sending a "Hello world!" message in response. """
-    chat_id = message.chat.id
-    bot.send_message(chat_id, "Hello! 🍡 Send me a message and I'll echo it back to you")
-
-
+# هندل پیام‌های جدید در گروه
 @bot.message_handler(func=lambda message: True)
-def echo_message(message: Message):
-    """Echo the user message."""
-    chat_id = message.chat.id
-    bot.send_message(chat_id, message.text)
+def send_random_message(message):
+    if message.chat.type in ["group", "supergroup"]:
+        response = random.choice(responses)
+        bot.reply_to(message, response)
 
-
+print("🤖 ربات فعال شد...")
 bot.infinity_polling()
